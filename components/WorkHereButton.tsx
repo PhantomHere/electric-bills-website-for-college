@@ -19,26 +19,29 @@ export function WorkHereButton() {
   if (account.workAccessStatus === 'pending') {
     return (
       <div className="rounded-2xl bg-[#F2F6FB] px-4 py-3 text-sm text-[#0B2545]">
-        Request to join as <span className="font-medium">{account.requestedRole}</span> is waiting
-        on an admin.
+        Request to join as <span className="font-semibold">{account.requestedRole}</span> is
+        waiting on an admin.
       </div>
     );
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
-      <select
-        className="rounded-full border border-[#E2E8F0] bg-white px-3 py-2 text-sm text-[#0B2545] focus:border-[#2F6FB0] focus:outline-none"
-        value={role}
-        onChange={(e) => setRole(e.target.value as StaffRole)}
-      >
-        <option value="controller">Controller — meter readings</option>
-        <option value="operator">Operator — billing</option>
-        <option value="viewer">Viewer — read only</option>
-      </select>
+    <div className="space-y-3">
+      <label className="block">
+        <span className="mb-1.5 block text-sm text-[#64748B]">Role you&apos;re requesting</span>
+        <select
+          className="w-full rounded-xl bg-[#F2F6FB] px-4 py-3 text-sm text-[#0B2545] focus:outline-none focus:ring-2 focus:ring-[#0B2545]/20"
+          value={role}
+          onChange={(e) => setRole(e.target.value as StaffRole)}
+        >
+          <option value="controller">Controller — meter readings</option>
+          <option value="operator">Operator — billing</option>
+          <option value="viewer">Viewer — read only</option>
+        </select>
+      </label>
       <button
         onClick={() => requestWorkAccess(role)}
-        className="rounded-full bg-[#0B2545] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D4E89]"
+        className="w-full rounded-full bg-[#0B2545] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1D4E89]"
       >
         Work here?
       </button>
