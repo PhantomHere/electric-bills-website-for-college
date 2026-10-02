@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, IBM_Plex_Mono } from 'next/font/google';
 import { SessionProvider } from '@/lib/session-provider';
+import { AccountSwitcher } from '@/components/AccountSwitcher';
+import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import './globals.css';
 
 // UI text and headings
@@ -21,7 +24,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Energy Account',
+  title: 'Volt — electricity billing',
   description: 'Electricity billing',
 };
 
@@ -29,7 +32,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${plexMono.variable}`}>
       <body className="bg-white font-sans text-[#0B2545] antialiased">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          <AccountSwitcher />
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </SessionProvider>
       </body>
     </html>
   );
