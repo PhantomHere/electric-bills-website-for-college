@@ -6,6 +6,7 @@ import { BillsTable } from '@/components/BillsTable';
 
 export default function BillsPage() {
   const { account } = useSession();
+  if (!account) return null; // AppShell redirects before this would ever show
 
   if (!account.abonentId) {
     return (

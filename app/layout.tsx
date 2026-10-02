@@ -1,11 +1,8 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, IBM_Plex_Mono } from 'next/font/google';
 import { SessionProvider } from '@/lib/session-provider';
-import { AccountSwitcher } from '@/components/AccountSwitcher';
-import { SiteHeader } from '@/components/SiteHeader';
-import { SiteFooter } from '@/components/SiteFooter';
+import { AppShell } from '@/components/AppShell';
 import './globals.css';
-
 // UI text and headings
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin', 'cyrillic'],
@@ -33,10 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${spaceGrotesk.variable} ${plexMono.variable}`}>
       <body className="bg-white font-sans text-[#0B2545] antialiased">
         <SessionProvider>
-          <AccountSwitcher />
-          <SiteHeader />
-          {children}
-          <SiteFooter />
+          <AppShell>{children}</AppShell>
         </SessionProvider>
       </body>
     </html>

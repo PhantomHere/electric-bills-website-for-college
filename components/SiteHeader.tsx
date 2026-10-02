@@ -2,19 +2,23 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap, FileText, User, LayoutDashboard } from 'lucide-react';
+import { Zap, FileText, LayoutDashboard, LogOut } from 'lucide-react';
 import { useSession } from '@/lib/session-provider';
 import { isStaff } from '@/lib/types';
 import { initials } from '@/lib/format';
 
 export function SiteHeader() {
-  const { account } = useSession();
+  const { account, logout } = useSession();
   const pathname = usePathname();
 
+  // AppShell only renders SiteHeader once an account exists, but the type
+  // is still nullable here — guard rather than assert.
+  if (!account) return null;
+
   const links = [
-    { href: '/bills', label: 'My bills', icon: FileText, show: true },
+    { href: '/bills', label: 'My bills', icon: FileText },
     ...(isStaff(account.role) && account.workAccessStatus === 'approved'
-      ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, show: true }]
+      ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }]
       : []),
   ];
 
@@ -55,6 +59,13 @@ export function SiteHeader() {
           >
             {initials(account.fullName)}
           </Link>
+          <button
+            onClick={logout}
+            className="ml-1 flex h-8 w-8 items-center justify-center rounded-full text-[#64748B] hover:bg-[#F2F6FB] hover:text-[#0B2545]"
+            title="Log out"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </nav>
       </div>
     </header>

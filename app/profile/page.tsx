@@ -4,7 +4,8 @@ import { useSession } from '@/lib/session-provider';
 import { WorkHereButton } from '@/components/WorkHereButton';
 
 export default function ProfilePage() {
-  const { account } = useSession();
+  const { account, logout } = useSession();
+  if (!account) return null; // AppShell redirects before this would ever show
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
@@ -38,6 +39,13 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      <button
+        onClick={logout}
+        className="mt-8 text-sm font-semibold text-[#64748B] hover:text-[#C0392B]"
+      >
+        Log out
+      </button>
     </main>
   );
 }

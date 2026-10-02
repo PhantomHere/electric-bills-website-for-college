@@ -24,9 +24,14 @@ export const mockBills: Bill[] = [
 // Stand-in for `select * from public.users` joined with an auth account.
 // role/workAccessStatus mimic what would sit in the `users` table once
 // someone's "Work here?" request has been approved by an admin.
+// Every demo account uses the same password so the login page can list
+// them openly — this whole file (passwords included) disappears once
+// Supabase Auth is wired in.
+const DEMO_PASSWORD = 'demo123';
+
 export const mockAccounts: Account[] = [
-  { id: 'acc-1', fullName: 'Ivan Petrov', email: 'ivan.petrov@example.com', role: 'customer', workAccessStatus: 'none', abonentId: 'ab-1' },
-  { id: 'acc-2', fullName: 'Anna Schmidt', email: 'anna.schmidt@example.com', role: 'customer', workAccessStatus: 'pending', requestedRole: 'controller', abonentId: 'ab-2' },
-  { id: 'acc-3', fullName: 'Maria Sokolova', email: 'admin@example.com', role: 'admin', workAccessStatus: 'approved' },
-  { id: 'acc-4', fullName: 'Dmitry Kuznetsov', email: 'operator1@example.com', role: 'operator', workAccessStatus: 'approved' },
+  { id: 'acc-1', fullName: 'Ivan Petrov', email: 'ivan.petrov@example.com', password: DEMO_PASSWORD, role: 'customer', workAccessStatus: 'none', abonentId: 'ab-1' },
+  { id: 'acc-2', fullName: 'Anna Schmidt', email: 'anna.schmidt@example.com', password: DEMO_PASSWORD, role: 'customer', workAccessStatus: 'pending', requestedRole: 'controller', abonentId: 'ab-2' },
+  { id: 'acc-3', fullName: 'Maria Sokolova', email: 'admin@example.com', password: DEMO_PASSWORD, role: 'admin', workAccessStatus: 'approved' },
+  { id: 'acc-4', fullName: 'Dmitry Kuznetsov', email: 'operator1@example.com', password: DEMO_PASSWORD, role: 'operator', workAccessStatus: 'approved' },
 ];

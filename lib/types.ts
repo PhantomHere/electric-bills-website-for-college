@@ -12,6 +12,9 @@ export interface Account {
   id: string;
   fullName: string;
   email: string;
+  // Plaintext, demo-only — this stands in for Supabase Auth, which is the
+  // only place a real password should ever be handled.
+  password: string;
   role: AccountRole;
   workAccessStatus: WorkAccessStatus;
   requestedRole?: StaffRole; // which staff role they asked for, while pending

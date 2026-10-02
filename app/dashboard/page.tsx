@@ -1,14 +1,15 @@
 'use client';
 
+import Link from 'next/link';
 import { useSession } from '@/lib/session-provider';
 import { hasAtLeast } from '@/lib/types';
 import { mockAbonents, mockContracts, mockBills } from '@/lib/mock-data';
 import { BillsTable } from '@/components/BillsTable';
 
 export default function DashboardPage() {
-  const { account } = useSession();
+  const { account, allAccounts } = useSession();
 
-  if (!hasAtLeast(account.role, 'viewer') || account.workAccessStatus !== 'approved') {
+  if (!account || !hasAtLeast(account.role, 'viewer') || account.workAccessStatus !== 'approved') {
     return (
       <main className="mx-auto max-w-4xl px-6 py-12">
         <p className="text-sm text-[#64748B]">You don&apos;t have staff access to this page.</p>
@@ -16,9 +17,21 @@ export default function DashboardPage() {
     );
   }
 
+  const pendingCount = allAccounts.filter((a) => a.workAccessStatus === 'pending').length;
+
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold tracking-tight">Staff dashboard</h1>
+      <div className="flex items-baseline justify-between">
+        <h1 className="text-3xl font-bold tracking-tight">Staff dashboard</h1>
+        {account.role === 'admin' && (
+          <Link
+            href="/dashboard/requests"
+            className="text-sm font-semibold text-[#2F6FB0] hover:underline"
+          >
+            Access requests{pendingCount > 0 && ` (${pendingCount})`} →
+          </Link>
+        )}
+      </div>
 
       <div className="mt-8 space-y-10">
         {/* Replace with: select * from abonents join contracts ... */}

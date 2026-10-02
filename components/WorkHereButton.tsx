@@ -7,6 +7,7 @@ import { StaffRole } from '@/lib/types';
 export function WorkHereButton() {
   const { account, requestWorkAccess } = useSession();
   const [role, setRole] = useState<StaffRole>('controller');
+  if (!account) return null;
 
   if (account.workAccessStatus === 'approved') {
     return (
