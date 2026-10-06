@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSession } from '@/lib/session-provider';
 import { AuthShell } from '@/components/AuthShell';
 import { FormField } from '@/components/FormField';
+import { Button } from '@/components/Button';
 
 export default function RegisterPage() {
   const { register } = useSession();
@@ -31,10 +32,10 @@ export default function RegisterPage() {
       panel={
         <>
           <h2 className="text-sm font-semibold">What you get right away</h2>
-          <p className="mt-1 text-sm text-[#64748B]">
+          <p className="mt-1 text-sm text-[#666]">
             New accounts start as a regular customer. If you work for the
             utility, you can request staff access afterwards from{' '}
-            <span className="font-medium text-[#0B2545]">Profile settings</span> — an admin
+            <span className="font-semibold text-[#1a1a1a]">Profile settings</span> — an admin
             reviews it before you see the staff dashboard.
           </p>
         </>
@@ -72,17 +73,14 @@ export default function RegisterPage() {
           onChange={(e) => setConfirm(e.target.value)}
           required
         />
-        {error && <p className="text-sm text-[#C0392B]">{error}</p>}
-        <button
-          type="submit"
-          className="w-full rounded-full bg-[#0B2545] px-5 py-3 text-sm font-semibold text-white hover:bg-[#1D4E89]"
-        >
+        {error && <p className="text-sm text-[#DB3E3E]">{error}</p>}
+        <Button type="submit" className="w-full">
           Create account
-        </button>
+        </Button>
       </form>
-      <p className="mt-6 text-sm text-[#64748B]">
+      <p className="mt-6 text-sm text-[#666]">
         Already have an account?{' '}
-        <Link href="/login" className="font-semibold text-[#0B2545] underline">
+        <Link href="/login" className="font-semibold text-[#1a1a1a] underline">
           Log in
         </Link>
       </p>

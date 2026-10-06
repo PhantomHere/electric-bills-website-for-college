@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap, FileText, LayoutDashboard, LogOut } from 'lucide-react';
+import { Zap, FileText, LayoutDashboard, LogOut, HelpCircle } from 'lucide-react';
 import { useSession } from '@/lib/session-provider';
 import { isStaff } from '@/lib/types';
 import { initials } from '@/lib/format';
@@ -20,13 +20,14 @@ export function SiteHeader() {
     ...(isStaff(account.role) && account.workAccessStatus === 'approved'
       ? [{ href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard }]
       : []),
+    { href: '/faq', label: 'FAQ', icon: HelpCircle },
   ];
 
   return (
-    <header className="border-b border-[#E2E8F0]">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 font-bold tracking-tight">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0B2545] text-white">
+    <header className="sticky top-0 z-20 border-b border-[#eee] bg-white/95 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-8">
+        <Link href="/" className="flex items-center gap-2.5 text-lg font-bold tracking-tight">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-black text-white">
             <Zap className="h-4 w-4" fill="currentColor" strokeWidth={0} />
           </span>
           Volt
@@ -39,8 +40,8 @@ export function SiteHeader() {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                  active ? 'bg-[#0B2545] text-white' : 'text-[#64748B] hover:text-[#0B2545]'
+                className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-medium transition-colors ${
+                  active ? 'bg-[#f2f2f2] text-black' : 'text-[#555] hover:bg-[#f2f2f2] hover:text-black'
                 }`}
               >
                 <l.icon className="h-3.5 w-3.5" />
@@ -50,10 +51,10 @@ export function SiteHeader() {
           })}
           <Link
             href="/profile"
-            className={`ml-2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
+            className={`ml-2 flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold ${
               pathname === '/profile'
-                ? 'bg-[#0B2545] text-white'
-                : 'bg-[#F2F6FB] text-[#0B2545] hover:bg-[#0B2545]/10'
+                ? 'bg-black text-white'
+                : 'bg-[#f2f2f2] text-[#1a1a1a] hover:bg-[#e8e8e8]'
             }`}
             title="Profile settings"
           >
@@ -61,7 +62,7 @@ export function SiteHeader() {
           </Link>
           <button
             onClick={logout}
-            className="ml-1 flex h-8 w-8 items-center justify-center rounded-full text-[#64748B] hover:bg-[#F2F6FB] hover:text-[#0B2545]"
+            className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-[#666] hover:bg-[#f2f2f2] hover:text-black"
             title="Log out"
           >
             <LogOut className="h-4 w-4" />

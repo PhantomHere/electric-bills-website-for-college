@@ -1,7 +1,7 @@
 'use client';
 
-// Diya's underlined segmented switcher: plain text siblings, a bold
-// underline on the active one. No pills, no background fill.
+// Segmented control: a gray track, active option on a white pill with a
+// soft shadow — matches the reference's .tabs/.tab pattern.
 export function Tabs<T extends string>({
   options,
   value,
@@ -12,17 +12,15 @@ export function Tabs<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="flex gap-6 border-b border-[#E2E8F0]">
+    <div className="inline-flex gap-1 rounded-xl bg-[#f2f2f2] p-1">
       {options.map((opt) => {
         const active = opt.value === value;
         return (
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
-            className={`-mb-px border-b-2 pb-2.5 text-sm font-medium transition-colors ${
-              active
-                ? 'border-[#0B2545] text-[#0B2545]'
-                : 'border-transparent text-[#64748B] hover:text-[#0B2545]'
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+              active ? 'bg-white text-[#1a1a1a] shadow-sm' : 'text-[#666] hover:text-[#1a1a1a]'
             }`}
           >
             {opt.label}
