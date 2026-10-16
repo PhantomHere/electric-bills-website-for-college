@@ -1,24 +1,31 @@
-// Real content, not filler — this is what actually backs the FAQ section
-// on the home page and the full /faq page.
+// Real content backing the FAQ preview on the home page and the /faq page.
 export const FAQ: { q: string; a: string }[] = [
   {
     q: 'Is this connected to a real electricity provider?',
-    a: 'No. Every bill, meter reading and account here is seeded mock data. Nothing is billed for real, and no real payment is ever taken.',
+    a: 'No. The bills, meters and readings are seeded demo data, and nothing here is billed for real. Payments you make are recorded against the bill so you can see how balances change, but no card details are collected and no money moves.',
+  },
+  {
+    q: 'How do I see my own bills after signing up?',
+    a: 'A new account isn’t attached to a contract yet. Open Profile settings → Link your contract and enter your account number and contract number. For the demo, try account 100001 with contract C-2024-001.',
+  },
+  {
+    q: 'How do I submit a meter reading?',
+    a: 'Go to Meters & readings, pick your meter and enter the current values. The reading can’t be lower than the previous one. A controller reviews it, and only verified readings are used when a bill is generated.',
+  },
+  {
+    q: 'How is a bill calculated?',
+    a: 'From two verified readings at the start and end of the period. Each zone (day, night, peak — or a single rate for one-zone meters) is the difference between them, multiplied by the tariff in effect at the end of the period. Expand any bill to see the line-by-line breakdown.',
+  },
+  {
+    q: 'What does each bill status mean?',
+    a: 'Awaiting payment: issued and not yet due. Partially paid: some, but not all, has been paid. Overdue: past the due date with nothing paid. Paid: fully settled. The status is always computed from the payments, never typed in by hand.',
   },
   {
     q: 'How do I get staff access?',
-    a: 'Open Profile settings and use "Work here?" to request a role. An admin reviews the request under Dashboard → Access requests and can approve or reject it — approving switches your role immediately.',
+    a: 'Open Profile settings and use “Work here?” to request a role. An admin reviews it under Staff → Access requests; approving it switches your role immediately. Controllers review readings, operators generate bills and record payments, admins manage access, viewers can look but not change anything.',
   },
   {
-    q: 'How is a bill amount calculated?',
-    a: 'From two meter readings a period apart, split into day/night/peak zones where the meter supports it, each zone priced at the tariff in effect at the end of the period.',
-  },
-  {
-    q: 'What happens once this is connected to Supabase?',
-    a: 'The mock data and the local-storage login are replaced by real Postgres tables and Supabase Auth. The role logic, bill filtering and approval flow stay exactly as they are now.',
-  },
-  {
-    q: 'Why does my new account have no bills?',
-    a: 'A freshly registered account isn\u2019t linked to an abonent record yet. In the real system that link happens when the utility opens a contract for you; here it\u2019s simply not simulated for new signups.',
+    q: 'What happens when this is connected to Supabase?',
+    a: 'The browser storage is replaced by real Postgres tables and Supabase Auth. The rules — billing, status, validation, roles — stay exactly the same; they are already written the way the database functions work.',
   },
 ];

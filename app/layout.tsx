@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { SessionProvider } from '@/lib/session-provider';
+import { DataProvider } from '@/lib/data-provider';
+import { ToastProvider } from '@/components/ToastProvider';
 import { AppShell } from '@/components/AppShell';
 import './globals.css';
 
@@ -12,8 +14,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Volt — electricity billing',
-  description: 'Electricity billing',
+  title: { default: 'Volt — electricity billing', template: '%s · Volt' },
+  description: 'Electricity bills, meter readings and payments in one place.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -21,7 +23,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.variable}>
       <body className="bg-white font-sans text-[#1a1a1a] antialiased">
         <SessionProvider>
-          <AppShell>{children}</AppShell>
+          <DataProvider>
+            <ToastProvider>
+              <AppShell>{children}</AppShell>
+            </ToastProvider>
+          </DataProvider>
         </SessionProvider>
       </body>
     </html>

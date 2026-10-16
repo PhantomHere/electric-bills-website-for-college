@@ -4,44 +4,48 @@ import { useState } from 'react';
 import { useSession } from '@/lib/session-provider';
 import { StaffRole } from '@/lib/types';
 import { Button } from './Button';
+import { Badge } from './Badge';
+import { SelectField } from './FormField';
+import { useToast } from './ToastProvider';
 
 export function WorkHereButton() {
   const { account, requestWorkAccess } = useSession();
+  const toast = useToast();
   const [role, setRole] = useState<StaffRole>('controller');
   if (!account) return null;
 
   if (account.workAccessStatus === 'approved') {
-    return (
-      <span className="inline-block rounded-full bg-[#e6f9ef] px-3 py-1.5 text-sm font-semibold text-[#04C65D]">
-        Staff account, {account.role}
-      </span>
-    );
+    return <Badge tone="green">Staff account · {account.role}</Badge>;
   }
 
   if (account.workAccessStatus === 'pending') {
     return (
-      <div className="rounded-2xl bg-[#fff8e6] px-4 py-3 text-sm text-[#92610b]">
-        Request to join as <span className="font-semibold">{account.requestedRole}</span> is
-        waiting on an admin.
+      <div className="rounded-2xl bg-[#fff8e6] px-4 py-3 text-sm text-[#8a4b04]">
+        Your request to join as <span className="font-semibold">{account.requestedRole}</span> is waiting on an admin.
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <label className="block">
-        <span className="mb-1.5 block text-sm font-medium text-[#444]">Role you&apos;re requesting</span>
-        <select
-          className="w-full rounded-xl border border-[#ddd] bg-white px-4 py-3 text-sm text-[#1a1a1a] outline-none focus:border-black"
-          value={role}
-          onChange={(e) => setRole(e.target.value as StaffRole)}
-        >
-          <option value="controller">Controller — meter readings</option>
-          <option value="operator">Operator — billing</option>
-          <option value="viewer">Viewer — read only</option>
-        </select>
-      </label>
-      <Button onClick={() => requestWorkAccess(role)} className="w-full">
+      {account.workAccessStatus === 'rejected' && (
+        <p className="rounded-xl bg-[#fde8e8] px-4 py-3 text-sm text-[#a02828]">
+          Your last request wasn&apos;t approved. You can ask again.
+        </p>
+      )}
+      <SelectField label="Role you're requesting" value={role} onChange={(e) => setRole(e.target.value as StaffRole)}>
+        <option value="controller">Controller — review meter readings</option>
+        <option value="operator">Operator — billing and payments</option>
+        <option value="viewer">Viewer — read only</option>
+      </SelectField>
+      <Button
+        className="w-full"
+        onClick={async () => {
+          const res = await requestWorkAccess(role);
+          if (res.ok) toast('Request sent — an admin will review it');
+          else toast(res.error ?? 'Could not send the request', 'error');
+        }}
+      >
         Work here?
       </Button>
     </div>
