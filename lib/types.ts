@@ -96,7 +96,6 @@ export interface Bill {
   consumptionNight: number;
   consumptionPeak: number;
   amount: number;
-  status: BillStatus; 
 }
 
 export interface BillLine {
