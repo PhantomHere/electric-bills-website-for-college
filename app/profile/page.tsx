@@ -11,14 +11,13 @@ import { Button } from '@/components/Button';
 import { Card, CardTitle } from '@/components/Card';
 import { FormField } from '@/components/FormField';
 import { LinkContractCard } from '@/components/LinkContractCard';
-import { Modal } from '@/components/Modal';
 import { PageHeader } from '@/components/PageHeader';
 import { useToast } from '@/components/ToastProvider';
 import { WorkHereButton } from '@/components/WorkHereButton';
 
 export default function ProfilePage() {
   const { account, logout, updateName, changePassword } = useSession();
-  const { data, resetDemoData } = useData();
+  const { data } = useData();
   const toast = useToast();
 
   const [editing, setEditing] = useState(false);
@@ -30,7 +29,6 @@ export default function ProfilePage() {
   const [pwError, setPwError] = useState<string | null>(null);
   const [pwLoading, setPwLoading] = useState(false);
 
-  const [confirmReset, setConfirmReset] = useState(false);
   if (!account) return null;
 
   const abonent = account.abonentId ? data.abonents.find((a) => a.id === account.abonentId) : undefined;
@@ -54,12 +52,6 @@ export default function ProfilePage() {
     setNext('');
     setPwError(null);
     toast('Password changed');
-  }
-
-  function reset() {
-    resetDemoData();
-    setConfirmReset(false);
-    toast('Bills, readings and payments reset to the seed data', 'info');
   }
 
   return (
@@ -144,24 +136,9 @@ export default function ProfilePage() {
 
         <div className="mt-10 flex flex-wrap items-center gap-6">
           <Button variant="outline" onClick={logout}>Log out</Button>
-          {account.role === 'admin' && (
-            <button onClick={() => setConfirmReset(true)} className="text-sm font-semibold text-[#666] underline hover:text-[#DB3E3E]">
-              Reset demo data
-            </button>
-          )}
         </div>
       </div>
 
-      <Modal open={confirmReset} onClose={() => setConfirmReset(false)} title="Reset demo data?">
-        <p className="text-sm text-[#666]">
-          This restores bills, readings and payments on this device to the original seed data. Accounts now live in
-          Supabase and are not affected.
-        </p>
-        <div className="mt-6 flex justify-end gap-2">
-          <Button variant="ghost" onClick={() => setConfirmReset(false)}>Cancel</Button>
-          <Button variant="danger" onClick={reset}>Reset everything</Button>
-        </div>
-      </Modal>
     </main>
   );
 }

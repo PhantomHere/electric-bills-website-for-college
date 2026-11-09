@@ -27,12 +27,10 @@ const STAFF_METHODS = [
 // and no money moves; the page says so.
 export function PayModal({
   bill,
-  accountId,
   staffMode = false,
   onClose,
 }: {
   bill: BillView | null;
-  accountId: string | null;
   staffMode?: boolean;
   onClose: () => void;
 }) {
@@ -44,6 +42,7 @@ export function PayModal({
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<Payment | null>(null);
   const [showReceipt, setShowReceipt] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!bill) return;
@@ -55,10 +54,12 @@ export function PayModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bill?.id, staffMode]);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!bill) return;
-    const res = recordPayment(bill.id, Number(amount.replace(',', '.')), method, accountId);
+    setLoading(true);
+    const res = await recordPayment(bill.id, Number(amount.replace(',', '.')), method);
+    setLoading(false);
     if (!res.ok || !res.value) {
       setError(res.error ?? 'Could not record the payment.');
       return;
@@ -130,7 +131,7 @@ export function PayModal({
             Demo — no card details are collected and no money moves. The payment is recorded against the bill so you can see how balances and statuses update.
           </p>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" loading={loading}>
             {staffMode ? 'Record payment' : 'Pay'} {formatMoney(Number(amount.replace(',', '.')) || 0)}
           </Button>
         </form>

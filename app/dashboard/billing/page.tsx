@@ -5,6 +5,8 @@ import { Info } from 'lucide-react';
 import { useSession } from '@/lib/session-provider';
 import { useData } from '@/lib/data-provider';
 import { canBill } from '@/lib/permissions';
+import { DraftBill } from '@/lib/billing';
+import { Result } from '@/lib/types';
 import { abonentOfContract } from '@/lib/selectors';
 import { formatDate, formatKwh, formatMoney, periodLabel } from '@/lib/format';
 import { Badge } from '@/components/Badge';
@@ -31,6 +33,8 @@ export default function BillingPage() {
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<Result<DraftBill> | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   // Suggest the next unbilled stretch: from the last bill's end (or the
   // first verified reading) to the latest verified reading.
@@ -45,15 +49,33 @@ export default function BillingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contractId]);
 
+  // The calculation happens in the database, so the preview is fetched
+  // whenever the contract, the dates or the underlying data change.
+  useEffect(() => {
+    if (!canBill(account) || !contractId || !start || !end) {
+      setPreview(null);
+      return;
+    }
+    let cancelled = false;
+    previewBill(contractId, start, end).then((res) => {
+      if (!cancelled) setPreview(res);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contractId, start, end, data.bills.length, data.readings.length]);
+
   if (!canBill(account)) return <Forbidden text="Generating bills needs an operator or admin role." />;
 
-  const preview = contractId && start && end ? previewBill(contractId, start, end) : null;
   const draft = preview?.ok ? preview.value : undefined;
   const abonent = contractId ? abonentOfContract(data, contractId) : undefined;
   const recent = bills.slice(0, 8);
 
-  function generate() {
-    const res = generateBill(contractId, start, end);
+  async function generate() {
+    setGenerating(true);
+    const res = await generateBill(contractId, start, end);
+    setGenerating(false);
     if (!res.ok) return setError(res.error ?? 'Could not generate the bill.');
     setError(null);
     toast(`Bill generated — ${formatMoney(draft?.bill.amount ?? 0)}`);
@@ -91,7 +113,7 @@ export default function BillingPage() {
                 readings on or before each date.
               </p>
               {error && <p role="alert" className="rounded-xl bg-[#fde8e8] px-4 py-3 text-sm text-[#a02828]">{error}</p>}
-              <Button className="w-full" disabled={!draft} onClick={generate}>Generate bill</Button>
+              <Button className="w-full" disabled={!draft} loading={generating} onClick={generate}>Generate bill</Button>
             </div>
           </Card>
 

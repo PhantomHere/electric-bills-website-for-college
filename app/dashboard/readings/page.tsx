@@ -20,8 +20,8 @@ import { StaffNav } from '@/components/StaffNav';
 import { useToast } from '@/components/ToastProvider';
 
 export default function ReadingsReviewPage() {
-  const { account, allAccounts } = useSession();
-  const { data, reviewReading } = useData();
+  const { account } = useSession();
+  const { data, reviewReading, nameOf } = useData();
   const toast = useToast();
   const [rejecting, setRejecting] = useState<string | null>(null);
   const [note, setNote] = useState('');
@@ -30,7 +30,6 @@ export default function ReadingsReviewPage() {
 
   if (!canReviewReadings(account) || !account) return <Forbidden text="Reviewing readings needs a controller, operator or admin role." />;
 
-  const nameOf = (id: string | null) => (id ? allAccounts.find((a) => a.id === id)?.fullName ?? 'Unknown' : 'Automatic');
   const meterById = (id: string) => data.meters.find((m) => m.id === id)!;
   const pending = data.readings.filter((r) => r.status === 'pending').sort((a, b) => a.date.localeCompare(b.date));
   const reviewed = data.readings
@@ -56,8 +55,8 @@ export default function ReadingsReviewPage() {
     return { prev, delta, days, ratio };
   }
 
-  function decide(r: Reading, decision: 'verified' | 'rejected') {
-    const res = reviewReading(r.id, decision, account!.id, decision === 'rejected' ? note : undefined);
+  async function decide(r: Reading, decision: 'verified' | 'rejected') {
+    const res = await reviewReading(r.id, decision, decision === 'rejected' ? note : undefined);
     if (!res.ok) return setError({ id: r.id, message: res.error ?? 'Could not save.' });
     setError(null);
     setRejecting(null);
@@ -185,7 +184,7 @@ export default function ReadingsReviewPage() {
 
       <Modal open={entering} onClose={() => setEntering(false)} title="Enter a reading">
         <p className="mb-4 text-sm text-[#666]">Readings entered by staff are verified immediately.</p>
-        <ReadingForm meters={activeMeters} enteredBy={account.id} autoVerify describe={describe} onDone={() => setEntering(false)} />
+        <ReadingForm meters={activeMeters} autoVerify describe={describe} onDone={() => setEntering(false)} />
       </Modal>
     </main>
   );

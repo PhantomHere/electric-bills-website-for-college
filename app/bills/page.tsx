@@ -84,7 +84,7 @@ export default function BillsPage() {
           })}
         </div>
       </div>
-      <PayModal bill={paying} accountId={account.id} onClose={() => setPaying(null)} />
+      <PayModal bill={paying} onClose={() => setPaying(null)} />
       <ReceiptModal payment={receipt} onClose={() => setReceipt(null)} />
     </main>
   );

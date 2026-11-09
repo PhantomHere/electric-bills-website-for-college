@@ -30,12 +30,6 @@ interface AuthUser {
   created_at: string;
 }
 
-// TEMPORARY BRIDGE: bills, contracts and meters still come from the local
-// seed (ids like "ab-1"), while the database uses numeric ids. This lines
-// them up for abonents 1 and 2. It goes away when the data layer moves to
-// Supabase.
-const toLocalAbonentId = (id: number | null) => (id == null ? undefined : `ab-${id}`);
-
 function toAccount(r: Row, createdAt: string): Account {
   return {
     id: String(r.user_id),
@@ -44,7 +38,7 @@ function toAccount(r: Row, createdAt: string): Account {
     role: r.role,
     workAccessStatus: r.work_access_status,
     requestedRole: r.requested_role ?? undefined,
-    abonentId: toLocalAbonentId(r.abonent_id),
+    abonentId: r.abonent_id == null ? undefined : String(r.abonent_id),
     createdAt,
   };
 }

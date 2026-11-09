@@ -140,7 +140,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <PayModal bill={paying} accountId={account?.id ?? null} staffMode onClose={() => setPaying(null)} />
+      <PayModal bill={paying} staffMode onClose={() => setPaying(null)} />
       <ReceiptModal payment={receipt} onClose={() => setReceipt(null)} />
     </main>
   );

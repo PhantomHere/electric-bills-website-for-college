@@ -169,7 +169,7 @@ export default function MetersPage() {
 
       <Modal open={!!readingFor} onClose={() => setReadingFor(null)} title="Submit a reading">
         {readingFor && (
-          <ReadingForm meters={[readingFor]} enteredBy={account.id} autoVerify={false} onDone={() => setReadingFor(null)} />
+          <ReadingForm meters={[readingFor]} autoVerify={false} onDone={() => setReadingFor(null)} />
         )}
       </Modal>
     </main>

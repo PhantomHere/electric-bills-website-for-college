@@ -19,13 +19,11 @@ function parseNum(s: string): number | null {
 // review them; staff entering a reading are verified immediately.
 export function ReadingForm({
   meters,
-  enteredBy,
   autoVerify,
   describe,
   onDone,
 }: {
   meters: Meter[];
-  enteredBy: string;
   autoVerify: boolean;
   describe?: (m: Meter) => string;
   onDone: () => void;
@@ -38,6 +36,7 @@ export function ReadingForm({
   const [night, setNight] = useState('');
   const [peak, setPeak] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const meter = meters.find((m) => m.id === meterId);
   if (!meter) return <p className="text-sm text-[#666]">No active meters to read.</p>;
@@ -47,7 +46,7 @@ export function ReadingForm({
     .sort((a, b) => b.date.localeCompare(a.date))[0];
   const multi = meter.type === 'multi';
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const dayN = parseNum(day);
     const nightN = parseNum(night);
@@ -56,16 +55,17 @@ export function ReadingForm({
       setError('Enter the readings as plain numbers.');
       return;
     }
-    const res = submitReading({
+    setLoading(true);
+    // The database decides the status: staff readings are verified straight
+    // away, a customer's waits for review.
+    const res = await submitReading({
       meterId: meter!.id,
       date,
       day: dayN,
       night: multi ? nightN : null,
       peak: multi ? peakN : null,
-      source: 'manual',
-      enteredBy,
-      autoVerify,
     });
+    setLoading(false);
     if (!res.ok) {
       setError(res.error ?? 'Could not save the reading.');
       return;
@@ -129,7 +129,7 @@ export function ReadingForm({
 
       {error && <p className="rounded-xl bg-[#fde8e8] px-4 py-3 text-sm text-[#a02828]">{error}</p>}
 
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" loading={loading}>
         {autoVerify ? 'Record reading' : 'Submit reading'}
       </Button>
     </form>
